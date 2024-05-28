@@ -1,18 +1,19 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import postgresConfig from './config/postres/postgres.config';
-import appConfig from './config/app/app.config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ScoresModule } from './scores/scores.module';
+import { ChatGateway } from './chat/chat.gateway';
+import { LoggingMiddleware } from './middlewares/logging.middleware';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: '.env',
       isGlobal: true,
-      load: [appConfig, postgresConfig],
+      load: [postgresConfig],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -35,4 +36,7 @@ import { ScoresModule } from './scores/scores.module';
   providers: [AppService],
 })
 export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+  }
 }

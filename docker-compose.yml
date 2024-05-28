@@ -1,16 +1,8 @@
 version: '3.7'
 services:
-  api:
-    image: eyadroshnikov/report-service:${IMAGE_TAG}_${CI_PIPELINE_ID}
-    env_file:
-      - /home/gitlab-runner/report-service/.env
-    ports:
-      - '3001:3000'
-    restart: on-failure
-
   postgres:
     image: postgres:16
-    container_name: postgres_db
+    container_name: atari_breakout_postgres_db
     restart: on-failure
     ports:
       - '5432:5432'
